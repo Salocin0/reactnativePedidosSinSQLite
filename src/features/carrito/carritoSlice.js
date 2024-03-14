@@ -8,8 +8,10 @@ export const carritoSlice = createSlice({
   },
   reducers: {
     addProduct: (state, action) => {
-      const index = state.productos.findIndex((producto) => producto.id === action.payload.id);
-      if(action.payload.cantidad>0){
+      const index = state.productos.findIndex(
+        (producto) => producto.id === action.payload.id
+      );
+      if (action.payload.cantidad > 0) {
         if (index === -1) {
           state.productos = [...state.productos, action.payload];
           state.total += action.payload.precio * action.payload.cantidad;
@@ -17,7 +19,7 @@ export const carritoSlice = createSlice({
           state.productos[index].cantidad += action.payload.cantidad;
           state.total += action.payload.precio * action.payload.cantidad;
         }
-      }else{
+      } else {
         if (index === -1) {
           state.productos = [...state.productos, action.payload];
           state.total += action.payload.precio * action.payload.cantidad;
@@ -28,15 +30,18 @@ export const carritoSlice = createSlice({
       }
     },
     removeProduct: (state, action) => {
-      state.productos = state.productos.filter((producto) => producto.id !== action.payload.id);
+      state.productos = state.productos.filter(
+        (producto) => producto.id !== action.payload.id
+      );
       state.total -= action.payload.precio * action.payload.cantidad;
     },
     removeAll: (state) => {
       state.productos = [];
-    }
+      state.total = 0;
+    },
   },
 });
 
-export const { addProduct, removeProduct,removeAll } = carritoSlice.actions;
+export const { addProduct, removeProduct, removeAll } = carritoSlice.actions;
 
 export default carritoSlice.reducer;

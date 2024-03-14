@@ -55,7 +55,7 @@ const MainNavigator = () => {
               tabBarLabel: "",
               headerShown: false,
               tabBarIcon: ({ focused }) => (
-                <TabBarIcon title="Ordenes" nameIcon="list" focused={focused} />
+                <TabBarIcon title="Pedidos" nameIcon="list" focused={focused} />
               ),
             }}
           />

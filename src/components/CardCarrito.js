@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Colors } from "../Styles/Colors";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,21 +7,37 @@ import {
   removeProduct,
   removeAll,
 } from "../features/carrito/carritoSlice";
+import { useAgregarProductoMutation,useDeleteProductoMutation } from "../app/services/CarritoApi";
 
 const CardCarrito = ({ producto }) => {
   const dispatch = useDispatch();
+  const localId = useSelector((state) => state.auth.localId)
+  const [deleteProductoMutation] = useDeleteProductoMutation();
+  const [agregarProductoMutation] = useAgregarProductoMutation();
+  const carrito = useSelector((state) => state.carrito);
 
   const handleAddOne = () => {
     dispatch(addProduct({ ...producto, cantidad: 1 }));
   };
-
+  
   const handleRemoveOne = () => {
     dispatch(addProduct({ ...producto, cantidad: -1 }));
   };
-
+  
   const handleRemoveAll = () => {
+    deleteProductoMutation({ localId, productId: producto.id });
     dispatch(removeProduct({ ...producto }));
-  }
+  };
+  
+  useEffect(() => {
+    if (carrito.productos.length > 0) {
+      agregarProductoMutation({ 
+        localId, 
+        productos: carrito.productos, 
+        total: carrito.total
+      });
+    }
+  }, [carrito]);
 
   return (
     <View style={styles.card}>
