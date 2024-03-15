@@ -8,6 +8,7 @@ import { Colors } from "../../Styles/Colors";
 import { useSelector } from 'react-redux'
 import TabBarIcon from "../TabBarIcon";
 import AuthStack from "./AuthStack";
+import PerfilStack from "./PerfilStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,9 +16,9 @@ const MainNavigator = () => {
   const user = useSelector((state) => state.auth);
 
   return (
-    <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
+    <>
       {user.idToken ? (
-        <>
+        <Tab.Navigator screenOptions={{ tabBarStyle: styles.tabBar }}>
           <Tab.Screen
             name="CompraStack"
             component={CompraStack}
@@ -59,19 +60,22 @@ const MainNavigator = () => {
               ),
             }}
           />
-        </>
+          <Tab.Screen
+            name="PerfilStack"
+            component={PerfilStack}
+            options={{
+              tabBarLabel: "",
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <TabBarIcon title="Perfil" nameIcon="user" focused={focused} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
       ) : (
-        <Tab.Screen
-          name="AuthStack"
-          component={AuthStack}
-          options={{
-            tabBarLabel: "",
-            tabBarVisible: false,
-            headerShown: false,
-          }}
-        />
+        <AuthStack />
       )}
-    </Tab.Navigator>
+    </>
   );
 };
 

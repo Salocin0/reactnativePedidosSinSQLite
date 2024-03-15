@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     },
     container:{
       width:"90%",
-      backgroundColor:Colors.green1,
+      backgroundColor:Colors.GrisClaroPeroNoTanClaro,
       gap:15,
       borderRadius:10,
       justifyContent:"center",
@@ -100,15 +100,15 @@ const styles = StyleSheet.create({
     },
     title:{
       fontSize:22,
-      fontFamily:fonts.LobsterRegular
+      fontFamily:fonts.Spartan
     },
     sub:{
       fontSize:14,
-      fontFamily:fonts.JosefinSansBold
+      fontFamily:fonts.Spartan
     },
     subLink:{
       fontSize:14,
-      fontFamily:fonts.JosefinSansBold,
-      color:"blue"
+      fontFamily:fonts.Spartan,
+      color:Colors.Azul
     }
 })
