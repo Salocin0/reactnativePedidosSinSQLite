@@ -6,6 +6,7 @@ import { authApi } from './services/Auth'
 import { productoApi } from './services/ProductosApi'
 import { carritoApi } from './services/CarritoApi'
 import { pedidoApi } from './services/PedidosApi'
+import { usuarioApi } from './services/usuarioApi'
 
 export default configureStore({
   reducer: {
@@ -16,9 +17,10 @@ export default configureStore({
     [productoApi.reducerPath]: productoApi.reducer,
     [carritoApi.reducerPath]: carritoApi.reducer,
     [pedidoApi.reducerPath]: pedidoApi.reducer,
+    [usuarioApi.reducerPath]: usuarioApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(productoApi.middleware,carritoApi.middleware,pedidoApi.middleware),
+    getDefaultMiddleware().concat(productoApi.middleware,carritoApi.middleware,pedidoApi.middleware,usuarioApi.middleware,authApi.middleware),
 
 })
