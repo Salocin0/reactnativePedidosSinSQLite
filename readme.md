@@ -9,8 +9,8 @@ Una aplicación de pedidos desarrollada con React Native que ofrece una experien
 - **Acceso seguro:** Solo los usuarios autenticados pueden acceder a la pantalla de perfil y realizar compras.
 - **Información del usuario:** Muestra detalles del usuario, como nombre y dirección.
 
-<img src="./screenshot/Screenshot_1705910419.png" width="300" >
-<img src="./screenshot/Screenshot_1705910424.png" width="300" >
+<img src="" width="300" >
+<img src="" width="300" >
 
 ### Autenticación con Firebase
 
@@ -33,9 +33,9 @@ Una aplicación de pedidos desarrollada con React Native que ofrece una experien
 - Muestra el precio.
 - Permite agregar el producto al carrito.
 
-<img src="./screenshot/Screenshot_1705910438.png" width="300" >
-<img src="./screenshot/Screenshot_1705910442.png" width="300" >
-<img src="./screenshot/Screenshot_1705910445.png" width="300" >
+<img src="" width="300" >
+<img src="" width="300" >
+<img src="" width="300" >
 
 ### Navegación Inferior
 
@@ -44,8 +44,8 @@ Una aplicación de pedidos desarrollada con React Native que ofrece una experien
 - **Pestaña 3 - Pedidos:** Historial de pedidos realizadas.
 - **Pestaña 4 - Perfil:** Información del usuario y ubicación.
 
-<img src="./screenshot/Screenshot_1705910459.png" width="300" >
-<img src="./screenshot/Screenshot_1705910463.png" width="300" >
+<img src="" width="300" >
+<img src="" width="300" >
 
 ## Tecnologías Utilizadas
 
@@ -58,6 +58,6 @@ Una aplicación de pedidos desarrollada con React Native que ofrece una experien
 
 ## Instalación
 
-1. Clona el repositorio: `git clone https://github.com/tu-usuario/tu-aplicacion.git`
+1. Clona el repositorio: `git clone `
 2. Instala las dependencias: `npm install`
 5. Ejecuta la aplicación: `npm start`
