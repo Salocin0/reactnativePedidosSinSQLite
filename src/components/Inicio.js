@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
+import React from "react";
+import { View, FlatList, ActivityIndicator } from "react-native";
 import PuestoCard from "./PuestoCard";
+import Aviso from "./Aviso";
 import styles from "./../Styles/Styles";
 import { useGetPuestosQuery } from "../app/services/ProductosApi";
+import { Colors } from "../Styles/Colors";
 
-export default Inicio = ({ navigation }) => {
-  const {data:puestos, isError,isLoading,isSuccess,error} = useGetPuestosQuery()
+const Inicio = ({ navigation }) => {
+  const { data: puestos, isLoading} = useGetPuestosQuery();
 
   const renderItem = ({ item }) => (
     <PuestoCard item={item} navigation={navigation} />
@@ -13,12 +15,20 @@ export default Inicio = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={puestos}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listaPuestos}
-      />
+      {isLoading ? ( 
+        <ActivityIndicator size="large" color={Colors.Azul} />
+      ) : puestos?.length > 0 ? (
+        <FlatList
+          data={puestos}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listaPuestos}
+        />
+      ) : (
+        <Aviso mensaje="No hay puestos disponibles" />
+      )}
     </View>
   );
 };
+
+export default Inicio;

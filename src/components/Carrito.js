@@ -5,6 +5,9 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  ToastAndroid
 } from "react-native";
 import CardCarrito from "./CardCarrito";
 import { Colors } from "../Styles/Colors";
@@ -16,17 +19,12 @@ import {
   useGetCarritoQuery,
 } from "../app/services/CarritoApi";
 import { usePostPedidoMutation } from "../app/services/PedidosApi";
+import Aviso from "./Aviso";
 
-const Carrito = () => {
+const Carrito = ({ navigation }) => {
   const dispatch = useDispatch();
   const localId = useSelector((state) => state.auth.localId);
-  const {
-    data: carrito,
-    isError,
-    isLoading,
-    isSuccess,
-    error,
-  } = useGetCarritoQuery(localId);
+  const { data: carrito, isLoading } = useGetCarritoQuery(localId);
   const productos = carrito
     ? Object.values(carrito?.productos[0] || {}).filter(
         (item) => typeof item === "object"
@@ -39,27 +37,58 @@ const Carrito = () => {
 
   const renderCard = ({ item }) => <CardCarrito producto={item} />;
 
-  const handleRemoveAll = async () => {
-    dispatch(removeAll());
+  const handleRemoveAll = () => {
+    Alert.alert(
+      "Vaciar Carrito",
+      "¿Estás seguro de que deseas vaciar el carrito?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Sí",
+          onPress: () => {dispatch(removeAll()),ToastAndroid.show('Carrito eliminado!', ToastAndroid.SHORT);},
+          
+        },
+      ]
+    );
   };
-
-  const handleBuy = async () => {
-    if(carro.total>0){
-      const pedido = {
-        id: Math.random() * 1000000000,
-        total: carro.total,
-        fecha: Date.now(),
-        estado: "Pendiente",
-      };
-      try {
-        await agregarPedidoMutation({localId, pedido});
-        dispatch(removeAll());
-      } catch (error) {
-        console.error("Error al agregar pedido:", error);
-      }
+  
+  const handleBuy = () => {
+    if (carro.total > 0) {
+      Alert.alert(
+        "Confirmar Compra",
+        "¿Estás seguro de que deseas confirmar la compra?",
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Sí",
+            onPress: async () => {
+              const pedido = {
+                id: Math.random() * 1000000000,
+                total: carro.total,
+                fecha: Date.now(),
+                estado: "Pendiente",
+              };
+              try {
+                agregarPedidoMutation({ localId, pedido });
+                dispatch(removeAll());
+                ToastAndroid.show('Compra registrada!', ToastAndroid.SHORT);
+                navigation.navigate("Pedidos")
+              } catch (error) {
+                console.error("Error al agregar pedido:", error);
+              }
+            },
+          },
+        ]
+      );
     }
   };
-
+  
   useEffect(() => {
     if (carro.productos.length === 0) {
       agregarProductoMutation({
@@ -72,24 +101,35 @@ const Carrito = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={productos}
-        renderItem={renderCard}
-        keyExtractor={(item) => item.id.toString()}
-        style={{ marginTop: 0, marginBottom: 95 }}
-        ListFooterComponent={() => <View style={{ height: 25 }} />}
-      />
-      <TouchableOpacity style={styles.trashButton} onPress={handleRemoveAll}>
-        <Text style={{ color: Colors.Blanco }}>Vaciar Carrito </Text>
-        <Icon name="trash" size={18} color={Colors.Blanco} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.BuyButton} onPress={handleBuy}>
-        <Text style={{ color: Colors.Blanco }}>Confirmar Compra </Text>
-        <Icon name="arrow-right" size={18} color={Colors.Blanco} />
-      </TouchableOpacity>
-      <View style={styles.total}>
-        <Text style={styles.text}>Total $ {total}</Text>
-      </View>
+      {isLoading ? (
+        <ActivityIndicator size="large" color={Colors.Azul} />
+      ) : carrito?.productos.length > 0 ? (
+        <View style={styles.container}>
+          <FlatList
+            data={productos}
+            renderItem={renderCard}
+            keyExtractor={(item) => item.id.toString()}
+            style={{ width: "100%", marginTop: 0, marginBottom: 95 }}
+            ListFooterComponent={() => <View style={{ height: 25 }} />}
+          />
+          <View style={styles.total}>
+            <Text style={styles.text}>Total $ {total}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.trashButton}
+            onPress={handleRemoveAll}
+          >
+            <Text style={{ color: Colors.Blanco }}>Vaciar Carrito </Text>
+            <Icon name="trash" size={18} color={Colors.Blanco} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.BuyButton} onPress={handleBuy}>
+            <Text style={{ color: Colors.Blanco }}>Confirmar Compra </Text>
+            <Icon name="arrow-right" size={18} color={Colors.Blanco} />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <Aviso mensaje="No hay productos en el Carrito" />
+      )}
     </View>
   );
 };
@@ -100,13 +140,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     position: "relative",
   },
   total: {
     position: "absolute",
     bottom: 0,
-    width: "100%",
+    width: "101%",
     backgroundColor: Colors.Info,
     alignItems: "center",
     justifyContent: "center",
@@ -121,8 +161,8 @@ const styles = StyleSheet.create({
   trashButton: {
     position: "absolute",
     bottom: 50,
-    right: 0,
-    width: "30%",
+    right: -10,
+    width: "31%",
     backgroundColor: Colors.Rojo,
     alignItems: "center",
     justifyContent: "center",
@@ -133,8 +173,8 @@ const styles = StyleSheet.create({
   BuyButton: {
     position: "absolute",
     bottom: 50,
-    left: 0,
-    width: "70%",
+    left: -10,
+    width: "71%",
     backgroundColor: Colors.Verde,
     alignItems: "center",
     justifyContent: "center",

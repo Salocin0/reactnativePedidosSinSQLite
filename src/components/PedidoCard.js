@@ -18,13 +18,10 @@ const PedidoCard = ({ pedido, onCancel }) => {
     <View style={styles.card}>
       <View style={{}}>
       <Text style={{ fontSize: 20 }}>{new Date(pedido.fecha).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}</Text>
-        <Text style={{ fontSize: 16 }}>{pedido.estado}</Text>
+        <Text style={{ fontSize: 16, fontWeight: "bold", backgroundColor: Colors.Verde, borderRadius: 5, color: Colors.Blanco, textAlign:"center", padding:5, width:105, paddingEnd:12 }}>  {pedido.estado}</Text>
       </View>
       <View style={{}}>
         <Text style={{ fontSize: 35 }}>{pedido.total} $</Text>
-        <TouchableOpacity onPress={() => onCancel(pedido.id)}>
-          <Text style={styles.cancelButton}>Cancelar Pedido</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -44,9 +41,11 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderColor: Colors.GrisClaroPeroNoTanClaro,
+    backgroundColor: Colors.Blanco,
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10,
+    marginVertical: 5,
+    marginHorizontal:5,
     flexDirection: "row",
     justifyContent: 'space-between',
   },

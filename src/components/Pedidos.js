@@ -5,26 +5,40 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { PedidoCard } from "./PedidoCard";
 import { useGetPedidosQuery } from "../app/services/PedidosApi";
 import { useSelector } from "react-redux";
+import { Colors } from "../Styles/Colors";
+import Aviso from "./Aviso";
 
 const Pedidos = () => {
   const localId = useSelector((state) => state.auth.localId);
-  var pedidos = useGetPedidosQuery(localId);
+  const pedidosQuery = useGetPedidosQuery(localId);
+  const { data: pedidos, isLoading } = pedidosQuery;
 
-  const handleCancelarPedido = (pedidoId) => {
-    console.log("Cancelando pedido:", pedidoId);
-  };
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.Azul} />
+      </View>
+    );
+  }
+
+  if (!pedidos || pedidos.length === 0) {
+    return (
+        <Aviso mensaje="No hay pedidos pendientes"/>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={pedidos.data}
+        data={pedidos}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <PedidoCard pedido={item} onCancel={handleCancelarPedido} />
+          <PedidoCard pedido={item} />
         )}
       />
     </View>
@@ -34,25 +48,25 @@ const Pedidos = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.GrisClaro,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.GrisClaro,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.GrisClaro,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-  },
-  cancelButton: {
-    color: "red",
-    marginTop: 5,
-  },
+  }
 });
 
 export default Pedidos;
