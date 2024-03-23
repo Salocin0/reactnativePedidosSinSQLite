@@ -14,9 +14,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.Spartan,
   },
   imagenProducto: {
-    height: 200,
-    marginBottom: 10,
-    resizeMode: "cover",
+    height: 250,
+    resizeMode: "contain",
     borderRadius: 10,
   },
   nombreProducto: {

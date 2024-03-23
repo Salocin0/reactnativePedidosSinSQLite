@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addProduct } from "../features/carrito/carritoSlice";
 import { useAgregarProductoMutation } from "../app/services/CarritoApi";
 import styles from "./../Styles/Styles";
+import imgdefault from "../../assets/productoDefault.jpg"
 
 const Detalle = () => {
   const route = useRoute();
@@ -52,7 +53,7 @@ const Detalle = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: producto.img }} style={styles.imagenProducto} />
+      <Image source={ imgdefault } style={styles.imagenProducto} />
       <Text style={styles.nombreProducto}>{producto.nombre}</Text>
       <Text style={styles.descripcionProducto}>{producto.descripcion}</Text>
       <Text style={styles.precioProducto}>
