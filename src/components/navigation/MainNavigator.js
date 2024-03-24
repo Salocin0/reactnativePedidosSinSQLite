@@ -9,30 +9,12 @@ import { useSelector, useDispatch } from "react-redux";
 import TabBarIcon from "../TabBarIcon";
 import AuthStack from "./AuthStack";
 import PerfilStack from "./PerfilStack";
-import { fetchSession } from "../../Utils/db";
-import { setUser } from "../../features/auth/authSlice";
 
 const Tab = createBottomTabNavigator();
 
 const MainNavigator = () => {
   const user = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    (async () => {
-      const session = await fetchSession();
-
-      if (session.rows.length) {
-        const now = Math.floor(Date.now() / 1000);
-        const updateAt = session.rows._array[0].updateAt;
-        const sessionTime = now - updateAt;
-        if (sessionTime < 3600) {
-          const user = session.rows._array[0];
-          dispatch(setUser(user));
-        }
-      }
-    })();
-  }, []);
 
   return (
     <>
