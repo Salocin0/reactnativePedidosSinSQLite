@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  ToastAndroid
 } from "react-native";
 import CardCarrito from "./CardCarrito";
 import { Colors } from "../Styles/Colors";
@@ -48,13 +47,18 @@ const Carrito = ({ navigation }) => {
         },
         {
           text: "Sí",
-          onPress: () => {dispatch(removeAll()),ToastAndroid.show('Carrito eliminado!', ToastAndroid.SHORT);},
-          
+          onPress: () => {
+            handleRemove();
+          },
         },
       ]
     );
   };
-  
+
+  const handleRemove = () => {
+    dispatch(removeAll());
+  };
+
   const handleBuy = () => {
     if (carro.total > 0) {
       Alert.alert(
@@ -77,8 +81,7 @@ const Carrito = ({ navigation }) => {
               try {
                 agregarPedidoMutation({ localId, pedido });
                 dispatch(removeAll());
-                ToastAndroid.show('Compra registrada!', ToastAndroid.SHORT);
-                navigation.navigate("Pedidos")
+                navigation.navigate("Pedidos");
               } catch (error) {
                 console.error("Error al agregar pedido:", error);
               }
@@ -88,7 +91,7 @@ const Carrito = ({ navigation }) => {
       );
     }
   };
-  
+
   useEffect(() => {
     if (carro.productos.length === 0) {
       agregarProductoMutation({
@@ -99,37 +102,34 @@ const Carrito = ({ navigation }) => {
     }
   }, [carro]);
 
+  if (isLoading) {
+    return <ActivityIndicator size="large" color={Colors.Azul} />;
+  }
+
+  if (!carrito || carrito?.productos.length === 0) {
+    return <Aviso mensaje="No hay productos en el Carrito" />;
+  }
+
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator size="large" color={Colors.Azul} />
-      ) : carrito?.productos.length > 0 ? (
-        <View style={styles.container}>
-          <FlatList
-            data={productos}
-            renderItem={renderCard}
-            keyExtractor={(item) => item.id.toString()}
-            style={{ width: "100%", marginTop: 0, marginBottom: 95 }}
-            ListFooterComponent={() => <View style={{ height: 25 }} />}
-          />
-          <View style={styles.total}>
-            <Text style={styles.text}>Total $ {total}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.trashButton}
-            onPress={handleRemoveAll}
-          >
-            <Text style={{ color: Colors.Blanco }}>Vaciar Carrito </Text>
-            <Icon name="trash" size={18} color={Colors.Blanco} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.BuyButton} onPress={handleBuy}>
-            <Text style={{ color: Colors.Blanco }}>Confirmar Compra </Text>
-            <Icon name="arrow-right" size={18} color={Colors.Blanco} />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <Aviso mensaje="No hay productos en el Carrito" />
-      )}
+      <FlatList
+        data={productos}
+        renderItem={renderCard}
+        keyExtractor={(item) => item.id.toString()}
+        style={{ width: "100%", marginTop: 0, marginBottom: 95 }}
+        ListFooterComponent={() => <View style={{ height: 25 }} />}
+      />
+      <View style={styles.total}>
+        <Text style={styles.text}>Total $ {total}</Text>
+      </View>
+      <TouchableOpacity style={styles.trashButton} onPress={handleRemoveAll}>
+        <Text style={{ color: Colors.Blanco }}>Vaciar Carrito </Text>
+        <Icon name="trash" size={18} color={Colors.Blanco} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.BuyButton} onPress={handleBuy}>
+        <Text style={{ color: Colors.Blanco }}>Confirmar Compra </Text>
+        <Icon name="arrow-right" size={18} color={Colors.Blanco} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   total: {
     position: "absolute",
     bottom: 0,
-    width: "101%",
+    width: "100%",
     backgroundColor: Colors.Info,
     alignItems: "center",
     justifyContent: "center",
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
   trashButton: {
     position: "absolute",
     bottom: 50,
-    right: -10,
-    width: "31%",
+    right: 0,
+    width: "30%",
     backgroundColor: Colors.Rojo,
     alignItems: "center",
     justifyContent: "center",
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
   BuyButton: {
     position: "absolute",
     bottom: 50,
-    left: -10,
-    width: "71%",
+    left: 0,
+    width: "70%",
     backgroundColor: Colors.Verde,
     alignItems: "center",
     justifyContent: "center",

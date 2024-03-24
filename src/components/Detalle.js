@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, View, TouchableOpacity, Image, Alert, ToastAndroid, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Counter } from "../features/counter/Counter";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../features/carrito/carritoSlice";
 import { useAgregarProductoMutation } from "../app/services/CarritoApi";
 import styles from "./../Styles/Styles";
-import imgdefault from "../../assets/productoDefault.jpg"
+import imgdefault from "../../assets/productoDefault.jpg";
 
 const Detalle = () => {
   const route = useRoute();
   const producto = route.params.producto;
   const dispatch = useDispatch();
-  const count = useSelector(state => state.counter.value);
+  const count = useSelector((state) => state.counter.value);
   const userId = useSelector((state) => state.auth.localId);
   const [agregarProductoMutation] = useAgregarProductoMutation();
   const carrito = useSelector((state) => state.carrito);
@@ -24,36 +31,39 @@ const Detalle = () => {
       [
         {
           text: "No",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Sí",
           onPress: () => {
-            dispatch(addProduct({ ...producto, cantidad: count }));
-            ToastAndroid.show('Productos agregados!', ToastAndroid.SHORT);
-          }
-        }
-      ],
+            handleAgregar();
+          },
+        },
+      ]
     );
   }, [count, producto, dispatch]);
+
+  const handleAgregar = () => {
+    dispatch(addProduct({ ...producto, cantidad: count }));
+  };
 
   useEffect(() => {
     if (carrito.productos.length > 0) {
       try {
-        agregarProductoMutation({ 
-          localId: userId, 
-          productos: carrito.productos, 
-          total: carrito.total
+        agregarProductoMutation({
+          localId: userId,
+          productos: carrito.productos,
+          total: carrito.total,
         });
       } catch (error) {
-        console.error('Error adding product to cart:', error);
+        console.error("Error adding product to cart:", error);
       }
     }
   }, [carrito, userId, agregarProductoMutation]);
 
   return (
     <View style={styles.container}>
-      <Image source={ imgdefault } style={styles.imagenProducto} />
+      <Image source={imgdefault} style={styles.imagenProducto} />
       <Text style={styles.nombreProducto}>{producto.nombre}</Text>
       <Text style={styles.descripcionProducto}>{producto.descripcion}</Text>
       <Text style={styles.precioProducto}>
